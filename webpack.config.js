@@ -3,6 +3,10 @@ const HtmlWebpackPlugin = require("html-webpack-plugin");
 
 const webpackConfig = {
   entry: path.resolve(__dirname, "src", "index.js"),
+  devtool: "inline-source-map",
+  devServer: {
+    contentBase: "./dist",
+  },
   plugins: [
     new HtmlWebpackPlugin({
       title: "vanillaJS app",
@@ -10,8 +14,9 @@ const webpackConfig = {
     }),
   ],
   output: {
-    filename: "main.js",
+    filename: "[name].[contenthash].bundle.js",
     path: path.resolve(__dirname, "dist"),
+    clean: true,
   },
   module: {
     rules: [
@@ -37,6 +42,18 @@ const webpackConfig = {
   },
 
   mode: "production",
+  optimization: {
+    splitChunks: {
+      cacheGroups: {
+        node_vendors: {
+          name: "vendor",
+          test: /[\\/]node_modules[\\/]/,
+          chunks: "all",
+          priority: 1,
+        },
+      },
+    },
+  },
 };
 
 module.exports = webpackConfig;
